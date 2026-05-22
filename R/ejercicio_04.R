@@ -38,3 +38,26 @@ if(p_A_int_B == 0){
 } else {
   cat(sprintf("-> NO son mutuamente excluyentes, porque P(A ∩ B) = %.4f (distinto de 0).\n", p_A_int_B))
 }
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(4)
+  cargar_ggplot()
+  df_suma <- as.data.frame(table(espacio$suma))
+  names(df_suma) <- c("suma", "freq")
+  p1 <- ggplot(df_suma, aes(x = suma, y = freq)) +
+    geom_col(fill = "#1abc9c", width = 0.7) +
+    labs(title = "Distribución de la suma (2 dados)", x = "Suma", y = "Frecuencia") +
+    tema_probabilidad()
+  guardar_ggplot(p1, carpeta, "distribucion_suma_dados")
+  df_prob <- data.frame(
+    evento = c("P(A)", "P(B)", "P(A inter B)", "P(A union B)"),
+    valor = c(p_A, p_B, p_A_int_B, p_A_union_B)
+  )
+  p2 <- ggplot(df_prob, aes(x = evento, y = valor)) +
+    geom_col(fill = "#8e44ad", width = 0.6) +
+    labs(title = "Eventos A y B", x = NULL, y = "Probabilidad") +
+    tema_probabilidad()
+  guardar_ggplot(p2, carpeta, "probabilidades_eventos")
+}

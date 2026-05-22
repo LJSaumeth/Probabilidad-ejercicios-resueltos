@@ -1,3 +1,22 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(k=0.5):
+    out = carpeta_graficas(11)
+    y = np.linspace(0, 2, 200)
+    f = np.where((y >= 0) & (y <= 2), k * y, 0)
+    plt.plot(y, f, color="#d35400", linewidth=2)
+    plt.fill_between(y, f, where=(y >= 0) & (y <= 1), alpha=0.3, color="#3498db", label="P(Y ≤ 1)")
+    plt.xlabel("y")
+    plt.ylabel("f(y)")
+    plt.title(f"Densidad f(y) = {k}·y en [0, 2]")
+    plt.legend()
+    guardar_figura(out, "densidad_continua")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -37,6 +56,9 @@ c) Calcule la media y la varianza de Y.
     print(f"-> Media (Esperanza) E[Y] = {media:.4f} (aprox 4/3)")
     print(f"-> E[Y^2] = {esperanza_y2:.4f}")
     print(f"-> Varianza Var(Y) = {varianza:.4f}")
+
+    crear_graficas(k)
+
 
 if __name__ == "__main__":
     main()

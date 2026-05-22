@@ -25,3 +25,17 @@ cat("--- SOLUCIÓN b) ---\n")
 cat("Explicación: En la Binomial Negativa parametrizada para el total de ensayos (fracasos + éxitos), la media es r / p.\n")
 media_inspecciones <- r / p
 cat(sprintf("-> Número esperado de inspecciones totales (Media) = %d / %.1f = %.4f\n", r, p, media_inspecciones))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(13)
+  cargar_ggplot()
+  k_tot <- seq(r, 20)
+  df <- data.frame(k = k_tot, prob = dnbinom(k_tot - r, size = r, prob = p))
+  p <- ggplot(df, aes(x = factor(k), y = prob)) +
+    geom_col(fill = "#9b59b6", width = 0.7) +
+    labs(title = sprintf("Binomial negativa (r=%d, p=%.1f)", r, p), x = "k", y = "P(X = k)") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "binomial_negativa_pmf")
+}

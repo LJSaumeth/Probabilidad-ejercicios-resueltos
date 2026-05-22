@@ -1,4 +1,25 @@
+import numpy as np
 import scipy.stats as stats
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(mu, sigma, limite_inf, limite_sup):
+    out = carpeta_graficas(19)
+    x = np.linspace(mu - 5 * sigma, mu + 5 * sigma, 400)
+    y = stats.norm.pdf(x, loc=mu, scale=sigma)
+    plt.plot(x, y, color="#34495e", linewidth=2)
+    mask = (x >= limite_inf) & (x <= limite_sup)
+    plt.fill_between(
+        x, y, where=mask, alpha=0.4, color="#27ae60", label="Especificación"
+    )
+    plt.xlabel("Diámetro (cm)")
+    plt.ylabel("Densidad")
+    plt.title(f"Normal del diámetro (μ={mu}, σ={sigma})")
+    plt.legend()
+    guardar_figura(out, "normal_rodamiento")
+
 
 def main():
     enunciado = """
@@ -31,6 +52,9 @@ b) Si se toma una muestra de 4 rodamientos, ¿cuál es la probabilidad de que lo
     prob_4_cumplen = prob_cumple ** n_muestra
     print(f"-> Probabilidad de que 1 rodamiento cumpla: {prob_cumple:.4f}")
     print(f"-> Probabilidad de que los {n_muestra} cumplan = {prob_cumple:.4f}^4 = {prob_4_cumplen:.4f}")
+
+    crear_graficas(mu, sigma, limite_inf, limite_sup)
+
 
 if __name__ == "__main__":
     main()

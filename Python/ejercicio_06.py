@@ -1,3 +1,26 @@
+import graficas_util  # noqa: F401
+
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(p_portatil, p_tableta, p_ambos):
+    out = carpeta_graficas(6)
+    solo_portatil = p_portatil - p_ambos
+    solo_tableta = p_tableta - p_ambos
+    ninguno = 1 - p_portatil - p_tableta + p_ambos
+    plt.bar(
+        ["Solo portátil", "Solo tableta", "Ambos", "Ninguno"],
+        [solo_portatil, solo_tableta, p_ambos, ninguno],
+        color=["#3498db", "#e74c3c", "#9b59b6", "#bdc3c7"],
+    )
+    plt.ylabel("Proporción")
+    plt.title("Diagrama de partición (empleados)")
+    plt.ylim(0, 1)
+    guardar_figura(out, "venn_empleados")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -26,6 +49,9 @@ b) ¿Los eventos “tener portátil” y “tener tableta” son independientes?
         print(f"-> Son INDEPENDIENTES. P(Ambos) = {p_ambos:.4f} coincide con el producto {p_producto:.4f}")
     else:
         print(f"-> NO son independientes. P(Ambos) = {p_ambos:.4f} es distinto de P(Portátil)*P(Tableta) = {p_producto:.4f}")
+
+    crear_graficas(p_portatil, p_tableta, p_ambos)
+
 
 if __name__ == "__main__":
     main()

@@ -33,3 +33,16 @@ cat("--- SOLUCIÓN c) ---\n")
 cat("Explicación: Para P(X > 2), sumamos simplemente las probabilidades correspondientes a X=3 y X=4.\n")
 p_mayor_2 <- p_x[3] + p_x[4]
 cat(sprintf("-> P(X > 2) = P(X=3) + P(X=4) = %.4f + %.4f = %.4f\n", p_x[3], p_x[4], p_mayor_2))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(9)
+  cargar_ggplot()
+  df <- data.frame(x = x_vals, prob = p_x)
+  p <- ggplot(df, aes(x = factor(x), y = prob)) +
+    geom_col(fill = "#6c5ce7", width = 0.7) +
+    labs(title = sprintf("PMF con c = %.2f", c), x = "x", y = "P(X = x)") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "pmf_discreta")
+}

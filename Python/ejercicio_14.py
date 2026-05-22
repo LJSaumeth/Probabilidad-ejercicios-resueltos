@@ -1,5 +1,23 @@
 import math
 
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(r, p, k_max=25):
+    out = carpeta_graficas(14)
+    k_vals = list(range(r, k_max + 1))
+    probs = [
+        math.comb(k - 1, r - 1) * (p**r) * ((1 - p) ** (k - r)) for k in k_vals
+    ]
+    plt.bar([str(k) for k in k_vals], probs, color="#9b59b6")
+    plt.xlabel("Número de clientes k")
+    plt.ylabel("P(X = k)")
+    plt.title(f"Binomial negativa (r={r}, p={p})")
+    guardar_figura(out, "binomial_negativa_pmf")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -28,6 +46,9 @@ b) ¿Cuál es el número esperado de clientes que se deben observar?
     print("Explicación: En la parametrización de número total de intentos, el valor esperado o media de la Binomial Negativa es E[X] = r / p.")
     esperado = r / p
     print(f"-> Número esperado de clientes a observar (Media): {r} / {p} = {esperado:.4f}")
+
+    crear_graficas(r, p)
+
 
 if __name__ == "__main__":
     main()

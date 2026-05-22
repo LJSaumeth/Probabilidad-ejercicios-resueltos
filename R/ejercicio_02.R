@@ -27,3 +27,21 @@ prob_al_menos_una <- 1 - prob_ninguna
 cat(sprintf("-> Casos donde ninguna es figura (28C2): %d\n", ninguna_figura))
 cat(sprintf("-> P(Ninguna figura) = %.4f\n", prob_ninguna))
 cat(sprintf("-> P(Al menos una figura) = 1 - %.4f = %.4f\n", prob_ninguna, prob_al_menos_una))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(2)
+  cargar_ggplot()
+  df <- data.frame(
+    evento = c("Mismo palo", "Al menos 1 figura"),
+    prob = c(prob_mismo_palo, prob_al_menos_una)
+  )
+  p <- ggplot(df, aes(x = evento, y = prob, fill = evento)) +
+    geom_col(width = 0.6, show.legend = FALSE) +
+    scale_fill_manual(values = c("#9b59b6", "#e67e22")) +
+    scale_y_continuous(limits = c(0, 1)) +
+    labs(title = "Probabilidades del ejercicio 2", x = NULL, y = "Probabilidad") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "probabilidades_cartas")
+}

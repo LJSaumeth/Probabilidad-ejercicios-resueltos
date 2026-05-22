@@ -1,4 +1,24 @@
+import numpy as np
 import scipy.stats as stats
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(mu, sigma):
+    out = carpeta_graficas(18)
+    x = np.linspace(mu - 4 * sigma, mu + 4 * sigma, 400)
+    y = stats.norm.pdf(x, loc=mu, scale=sigma)
+    plt.plot(x, y, color="#2c3e50", linewidth=2)
+    mask = (x >= 400) & (x <= 600)
+    plt.fill_between(x, y, where=mask, alpha=0.35, color="#3498db", label="400–600")
+    plt.axvline(650, color="#e74c3c", linestyle="--", label="Puntaje 650")
+    plt.xlabel("Puntaje")
+    plt.ylabel("Densidad")
+    plt.title(f"Normal (μ={mu}, σ={sigma})")
+    plt.legend()
+    guardar_figura(out, "normal_admision")
+
 
 def main():
     enunciado = """
@@ -35,6 +55,9 @@ c) Determine el puntaje mínimo necesario para estar en el 10% superior de la di
     puntaje_minimo = stats.norm.ppf(0.90, loc=mu, scale=sigma)
     print(f"-> PPF(0.90) con media=500 y std=100 = {puntaje_minimo:.2f}")
     print(f"-> Puntaje mínimo para estar en el 10% superior: {puntaje_minimo:.2f}")
+
+    crear_graficas(mu, sigma)
+
 
 if __name__ == "__main__":
     main()

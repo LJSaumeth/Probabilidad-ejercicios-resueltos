@@ -24,3 +24,17 @@ cat("Matemáticamente es igual a la probabilidad de 8 fracasos consecutivos: (1-
 cat("En R, podemos usar la función acumulada pgeom(7, prob=p) (que implica hasta 7 fracasos, es decir 8 ensayos en total) y restar de 1.\n")
 prob_mas_de_8 <- 1 - pgeom(8 - 1, prob=p)
 cat(sprintf("-> P(X > 8) = 1 - P(X ≤ 8) = (1-0.05)^8 = %.4f\n", prob_mas_de_8))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(15)
+  cargar_ggplot()
+  k_vals <- 1:15
+  df <- data.frame(k = k_vals, prob = dgeom(k_vals - 1, prob = p))
+  p <- ggplot(df, aes(x = factor(k), y = prob)) +
+    geom_col(fill = "#e67e22", width = 0.7) +
+    labs(title = sprintf("Geometrica (p=%.2f)", p), x = "k", y = "P(X = k)") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "geometrica_pmf")
+}

@@ -1,5 +1,37 @@
 import itertools
 
+import graficas_util  # noqa: F401
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(espacio):
+    out = carpeta_graficas(5)
+    sumas = [d1 + d2 for d1, d2 in espacio]
+    conteo = {s: sumas.count(s) for s in range(2, 13)}
+    plt.bar(conteo.keys(), conteo.values(), color="#5dade2")
+    plt.xlabel("Suma de los dos dados")
+    plt.ylabel("Frecuencia")
+    plt.title("Distribución de la suma (2 dados)")
+    guardar_figura(out, "distribucion_suma")
+
+    matriz = np.zeros((6, 6))
+    for d1, d2 in espacio:
+        matriz[d1 - 1, d2 - 1] += 1
+    plt.figure()
+    plt.imshow(matriz, cmap="Blues", origin="lower")
+    plt.colorbar(label="Frecuencia")
+    plt.xlabel("Dado 2")
+    plt.ylabel("Dado 1")
+    plt.xticks(range(6), range(1, 7))
+    plt.yticks(range(6), range(1, 7))
+    plt.title("Espacio muestral (6×6)")
+    guardar_figura(out, "mapa_dados")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -42,6 +74,9 @@ b) Verifique si A y B son independientes usando los axiomas de probabilidad.
         print(f"-> Son INDEPENDIENTES. P(A ∩ B) = {p_A_inter_B:.4f} coincide con P(A)*P(B) = {p_A * p_B:.4f}")
     else:
         print(f"-> NO son independientes. P(A ∩ B) = {p_A_inter_B:.4f} NO coincide con P(A)*P(B) = {p_A * p_B:.4f}")
+
+    crear_graficas(espacio)
+
 
 if __name__ == "__main__":
     main()

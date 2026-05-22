@@ -34,3 +34,17 @@ cat("Paso 3: Identificar el mayor.\n")
 probs <- c(L1=p_L1_D, L2=p_L2_D, L3=p_L3_D)
 mayor <- names(probs)[which.max(probs)]
 cat(sprintf("-> El laboratorio con mayor probabilidad es: %s (%.4f)\n", mayor, max(probs)))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(8)
+  cargar_ggplot()
+  df <- data.frame(lab = names(probs), prob = as.numeric(probs))
+  p <- ggplot(df, aes(x = lab, y = prob, fill = lab)) +
+    geom_col(width = 0.6, show.legend = FALSE) +
+    scale_fill_manual(values = c("#3498db", "#e74c3c", "#f39c12")) +
+    labs(title = "Origen de vacuna defectuosa", x = "Laboratorio", y = "P(Li | defectuosa)") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "bayes_laboratorios")
+}

@@ -1,3 +1,21 @@
+import graficas_util  # noqa: F401
+
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(p, k_max=20):
+    out = carpeta_graficas(16)
+    k_vals = list(range(1, k_max + 1))
+    probs = [((1 - p) ** (k - 1)) * p for k in k_vals]
+    plt.bar([str(k) for k in k_vals], probs, color="#e67e22")
+    plt.xlabel("Página k (primer error)")
+    plt.ylabel("P(X = k)")
+    plt.title(f"Distribución geométrica (p={p})")
+    guardar_figura(out, "geometrica_pmf")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -26,6 +44,9 @@ b) ¿Cuál es la probabilidad de que se necesiten más de 5 páginas para encont
     prob_mas_de_5 = (1 - p) ** k_mas_de
     print(f"-> P(X > 5) = (1 - {p})^5")
     print(f"-> Probabilidad de necesitar más de 5 páginas para el primer error: {prob_mas_de_5:.4f}")
+
+    crear_graficas(p)
+
 
 if __name__ == "__main__":
     main()

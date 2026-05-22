@@ -1,7 +1,23 @@
 import math
 
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
 def prob_poisson(lmbda, k):
     return math.exp(-lmbda) * (lmbda ** k) / math.factorial(k)
+
+def crear_graficas(lmbda, nombre_archivo, k_max=12):
+    out = carpeta_graficas(17)
+    k_vals = list(range(k_max + 1))
+    probs = [prob_poisson(lmbda, k) for k in k_vals]
+    plt.bar([str(k) for k in k_vals], probs, color="#3498db")
+    plt.xlabel("Llamadas k")
+    plt.ylabel("P(X = k)")
+    plt.title(f"Poisson (lambda={lmbda})")
+    guardar_figura(out, nombre_archivo)
+
 
 def main():
     enunciado = """
@@ -38,6 +54,10 @@ c) ¿Cuál es la probabilidad de que en 2 minutos se reciban al menos 10 llamada
     print(f"-> Nueva media (λ) para 2 min = 8")
     print(f"-> P(X≤9) = {prob_9_o_menos:.4f}")
     print(f"-> P(X≥10) = 1 - {prob_9_o_menos:.4f} = {prob_al_menos_10:.4f}")
+
+    crear_graficas(lmbda_1, "poisson_1_min")
+    crear_graficas(lmbda_2, "poisson_2_min", k_max=16)
+
 
 if __name__ == "__main__":
     main()

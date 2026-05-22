@@ -1,3 +1,18 @@
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(x_vals, p_x):
+    out = carpeta_graficas(10)
+    plt.bar([str(x) for x in x_vals], p_x, color="#6c5ce7")
+    plt.xlabel("x")
+    plt.ylabel("P(X = x)")
+    plt.title("Función de probabilidad de X")
+    plt.ylim(0, max(p_x) * 1.2)
+    guardar_figura(out, "pmf_discreta")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -31,6 +46,9 @@ c) Calcule P(1 ≤ X ≤ 3).
     print("Explicación: Para P(1 ≤ X ≤ 3), simplemente sumamos las probabilidades individuales de que X valga 1, 2 o 3.")
     p_1_a_3 = p_x[0] + p_x[1] + p_x[2]
     print(f"-> P(1 ≤ X ≤ 3) = P(X=1) + P(X=2) + P(X=3) = 0.2 + 0.3 + 0.4 = {p_1_a_3:.4f}")
+
+    crear_graficas(x_vals, p_x)
+
 
 if __name__ == "__main__":
     main()

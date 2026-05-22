@@ -29,3 +29,16 @@ varianza <- n * p * (1 - p)
 desv_tipica <- sqrt(varianza)
 cat(sprintf("-> Número esperado de aciertos (Media) = %d * %.2f = %.4f\n", n, p, media))
 cat(sprintf("-> Desviación típica = %.4f\n", desv_tipica))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(11)
+  cargar_ggplot()
+  df <- data.frame(k = 0:n, prob = dbinom(0:n, size = n, prob = p))
+  p <- ggplot(df, aes(x = factor(k), y = prob)) +
+    geom_col(fill = "#2ecc71", width = 0.7) +
+    labs(title = sprintf("Binomial (n=%d, p=%.2f)", n, p), x = "k", y = "P(X = k)") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "binomial_pmf")
+}

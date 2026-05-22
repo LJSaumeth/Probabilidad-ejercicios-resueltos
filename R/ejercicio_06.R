@@ -28,3 +28,20 @@ cat("Paso 2: Calcular Bayes P(Alergia | Positivo).\n")
 cat("Fórmula: (P(Alergia) * P(Pos|Alergia)) / P(Positivo).\n")
 p_alergia_pos <- (p_alergia * p_pos_alergia) / p_pos
 cat(sprintf("-> P(Alergia | Positivo) = (0.20 * 0.90) / %.4f = %.4f\n", p_pos, p_alergia_pos))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(6)
+  cargar_ggplot()
+  df <- data.frame(
+    metrica = c("P(Alergia)", "P(Sano)", "P(+|Alergia)", "P(+|Sano)", "P(+)", "P(Alergia|+)"),
+    valor = c(p_alergia, p_sano, p_pos_alergia, p_pos_sano, p_pos, p_alergia_pos)
+  )
+  p <- ggplot(df, aes(x = reorder(metrica, valor), y = valor)) +
+    geom_col(fill = "#c0392b", width = 0.6) +
+    coord_flip() +
+    labs(title = "Prueba de alergia (Bayes)", x = NULL, y = "Probabilidad") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "bayes_alergia", height = 6)
+}

@@ -1,5 +1,22 @@
 import itertools
 
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(espacio_muestral):
+    out = carpeta_graficas(1)
+    conteos = {0: 0, 1: 0, 2: 0, 3: 0}
+    for resultado in espacio_muestral:
+        conteos[resultado.count("C")] += 1
+    etiquetas = [f"{k} caras" for k in conteos]
+    plt.bar(etiquetas, list(conteos.values()), color=["#4c72b0", "#55a868", "#c44e52", "#8172b2"])
+    plt.ylabel("Número de resultados")
+    plt.title("Distribución del número de caras (3 monedas)")
+    guardar_figura(out, "distribucion_caras")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -34,6 +51,9 @@ c) ¿Cuál es la probabilidad de obtener al menos una cruz?
     al_menos_una_cruz = [resultado for resultado in espacio_muestral if resultado.count('X') >= 1]
     prob_al_menos_una_cruz = len(al_menos_una_cruz) / len(espacio_muestral)
     print(f"-> Probabilidad = {len(al_menos_una_cruz)} / {len(espacio_muestral)} = {prob_al_menos_una_cruz:.4f}")
+
+    crear_graficas(espacio_muestral)
+
 
 if __name__ == "__main__":
     main()

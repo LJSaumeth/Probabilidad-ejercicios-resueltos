@@ -1,11 +1,24 @@
 import math
 
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
 def coef_multinomial(n, k_lista):
     """Calcula el coeficiente multinomial n! / (k1! * k2! * ...)"""
     coef = math.factorial(n)
     for k in k_lista:
         coef //= math.factorial(k)
     return coef
+
+def crear_graficas(p_A, p_B, p_C):
+    out = carpeta_graficas(13)
+    plt.bar(["A", "B", "C"], [p_A, p_B, p_C], color=["#e74c3c", "#3498db", "#f1c40f"])
+    plt.ylabel("Proporción de electores")
+    plt.title("Preferencias por candidato")
+    guardar_figura(out, "preferencias_candidatos")
+
 
 def main():
     enunciado = """
@@ -41,6 +54,9 @@ b) ¿Cuál es la probabilidad de que ninguno favorezca a C?
     prob_ninguno_C = p_no_C ** n
     print(f"-> Probabilidad de (A o B) en un solo votante: {p_no_C:.2f}")
     print(f"-> Probabilidad de que los 8 elijan (A o B) = {p_no_C:.2f}^8 = {prob_ninguno_C:.4f}")
+
+    crear_graficas(p_A, p_B, p_C)
+
 
 if __name__ == "__main__":
     main()

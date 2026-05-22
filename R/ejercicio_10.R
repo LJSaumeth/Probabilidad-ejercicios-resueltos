@@ -30,3 +30,19 @@ cat("La primitiva es (3/10)*y^5. Evaluada entre -1 y 1 da: (3/10)*1 - (3/10)*(-1
 var_y <- 0.6 - (media^2)
 cat(sprintf("-> E[Y^2] = 0.6000\n"))
 cat(sprintf("-> Varianza Var(Y) = 0.6000 - 0 = %.4f\n", var_y))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(10)
+  cargar_ggplot()
+  y <- seq(-1, 1, length.out = 200)
+  df <- data.frame(y = y, f = ifelse(y >= -1 & y <= 1, 1.5 * y^2, 0))
+  p <- ggplot(df, aes(x = y, y = f)) +
+    geom_line(color = "#d35400", linewidth = 1.1) +
+    geom_ribbon(data = subset(df, y >= 0 & y <= 0.5), aes(ymin = 0, ymax = f),
+                fill = "#3498db", alpha = 0.35) +
+    labs(title = "Densidad f(y) = (3/2)*y^2", x = "y", y = "f(y)") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "densidad_y")
+}

@@ -29,3 +29,20 @@ prob_menos_50 <- pnorm(50, mean=mu, sd=sigma)
 prob_6_menos_50 <- prob_menos_50^6
 cat(sprintf("-> P(X < 50) para 1 reparación = %.4f\n", prob_menos_50))
 cat(sprintf("-> P(Las 6 duren < 50) = %.4f^6 = %.4f\n", prob_menos_50, prob_6_menos_50))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(17)
+  cargar_ggplot()
+  x <- seq(mu - 4 * sigma, mu + 4 * sigma, length.out = 300)
+  df <- data.frame(x = x, y = dnorm(x, mean = mu, sd = sigma))
+  p <- ggplot(df, aes(x = x, y = y)) +
+    geom_line(color = "#2c3e50", linewidth = 1.1) +
+    geom_ribbon(data = subset(df, x >= 40 & x <= 50), aes(ymin = 0, ymax = y),
+                fill = "#3498db", alpha = 0.35) +
+    geom_vline(xintercept = percentil_90, color = "#e74c3c", linetype = "dashed") +
+    labs(title = sprintf("Normal (mu=%d, sigma=%d)", mu, sigma), x = "Minutos", y = "Densidad") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "normal_reparaciones")
+}

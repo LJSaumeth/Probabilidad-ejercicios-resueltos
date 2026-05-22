@@ -1,5 +1,21 @@
 import math
 
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(n, p):
+    out = carpeta_graficas(12)
+    k_vals = list(range(n + 1))
+    probs = [math.comb(n, k) * (p**k) * ((1 - p) ** (n - k)) for k in k_vals]
+    plt.bar([str(k) for k in k_vals], probs, color="#2ecc71")
+    plt.xlabel("Aciertos k")
+    plt.ylabel("P(X = k)")
+    plt.title(f"Binomial (n={n}, p={p})")
+    guardar_figura(out, "binomial_pmf")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -39,6 +55,9 @@ c) ¿Cuál es el número esperado de aciertos y su desviación estándar?
     
     print(f"-> Número esperado de aciertos (Media) = 10 * 0.25 = {media:.4f}")
     print(f"-> Desviación estándar = {desviacion:.4f}")
+
+    crear_graficas(n, p)
+
 
 if __name__ == "__main__":
     main()

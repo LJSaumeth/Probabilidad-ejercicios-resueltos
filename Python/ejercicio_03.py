@@ -1,5 +1,33 @@
 import math
 
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(total_codigos, codigos_diferentes, codigos_pares):
+    out = carpeta_graficas(3)
+    categorias = ["Todos los códigos", "Dígitos distintos", "Terminan en par"]
+    valores = [total_codigos, codigos_diferentes, codigos_pares]
+    plt.bar(categorias, valores, color=["#34495e", "#1abc9c", "#f39c12"])
+    plt.ylabel("Cantidad de códigos")
+    plt.title("Conteo de códigos de 4 dígitos")
+    plt.xticks(rotation=15, ha="right")
+    guardar_figura(out, "conteo_codigos")
+
+    plt.figure()
+    probs = [v / total_codigos for v in valores[1:]]
+    plt.bar(
+        ["Dígitos distintos", "Terminan en par"],
+        probs,
+        color=["#1abc9c", "#f39c12"],
+    )
+    plt.ylabel("Probabilidad")
+    plt.ylim(0, 1)
+    plt.title("Probabilidades solicitadas")
+    guardar_figura(out, "probabilidades")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -30,6 +58,9 @@ c) ¿Cuál es la probabilidad de que el código termine en un número par?
     prob_pares = codigos_pares / total_codigos
     print(f"-> Códigos que terminan en par: {codigos_pares}")
     print(f"-> Probabilidad = {codigos_pares} / {total_codigos} = {prob_pares:.4f}")
+
+    crear_graficas(total_codigos, codigos_diferentes, codigos_pares)
+
 
 if __name__ == "__main__":
     main()

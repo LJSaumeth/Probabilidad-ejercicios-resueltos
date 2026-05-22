@@ -37,3 +37,17 @@ media <- k * (m / N_total)
 varianza <- k * (m / N_total) * (n / N_total) * ((N_total - k) / (N_total - 1))
 cat(sprintf("-> Media (Valor esperado) = %.4f\n", media))
 cat(sprintf("-> Varianza = %.4f\n", varianza))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(14)
+  cargar_ggplot()
+  x_vals <- 0:min(k, m)
+  df <- data.frame(x = x_vals, prob = dhyper(x_vals, m, n, k))
+  p <- ggplot(df, aes(x = factor(x), y = prob)) +
+    geom_col(fill = "#1abc9c", width = 0.7) +
+    labs(title = sprintf("Hipergeometrica (N=%d, m=%d, k=%d)", N_total, m, k), x = "x", y = "P(X = x)") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "hipergeometrica_pmf")
+}

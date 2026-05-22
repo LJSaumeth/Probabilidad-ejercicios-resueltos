@@ -1,5 +1,28 @@
 import math
 
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(N, K, n):
+    out = carpeta_graficas(15)
+    x_vals = list(range(min(n, K) + 1))
+    probs = []
+    for x in x_vals:
+        if n - x <= N - K:
+            probs.append(
+                (math.comb(K, x) * math.comb(N - K, n - x)) / math.comb(N, n)
+            )
+        else:
+            probs.append(0)
+    plt.bar([str(x) for x in x_vals], probs, color="#1abc9c")
+    plt.xlabel("Defectuosos en la muestra")
+    plt.ylabel("P(X = x)")
+    plt.title(f"Hipergeométrica (N={N}, K={K}, n={n})")
+    guardar_figura(out, "hipergeometrica_pmf")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -35,6 +58,9 @@ b) ¿Cuál es el número esperado de bombillos defectuosos en la muestra?
     print("Explicación: El valor esperado (media) para una distribución Hipergeométrica es E[X] = n * (K / N).")
     esperado = n * (K / N)
     print(f"-> Número esperado de defectuosos (Media) = {n} * ({K}/{N}) = {esperado:.4f}")
+
+    crear_graficas(N, K, n)
+
 
 if __name__ == "__main__":
     main()

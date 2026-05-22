@@ -1,3 +1,36 @@
+import graficas_util  # noqa: F401
+
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(p_m1, p_m2, p_m3, p_d_m1, p_d_m2, p_d_m3, p_d):
+    out = carpeta_graficas(8)
+    maquinas = ["M1", "M2", "M3"]
+    produccion = [p_m1, p_m2, p_m3]
+    defecto = [p_d_m1, p_d_m2, p_d_m3]
+    fig, ax1 = plt.subplots()
+    ax1.bar(maquinas, produccion, color="#5dade2", label="Fracción de producción")
+    ax1.set_ylabel("Producción")
+    ax2 = ax1.twinx()
+    ax2.plot(maquinas, defecto, "o-", color="#e74c3c", label="Tasa de defecto")
+    ax2.set_ylabel("P(defecto | máquina)")
+    ax1.set_title("Producción y tasa de defecto por máquina")
+    guardar_figura(out, "maquinas_produccion")
+
+    posteriores = [
+        (p_m1 * p_d_m1) / p_d,
+        (p_m2 * p_d_m2) / p_d,
+        (p_m3 * p_d_m3) / p_d,
+    ]
+    plt.figure()
+    plt.bar(maquinas, posteriores, color=["#2980b9", "#27ae60", "#8e44ad"])
+    plt.ylabel("P(Mi | defectuosa)")
+    plt.title("Probabilidades posteriores (Bayes)")
+    guardar_figura(out, "bayes_posterior")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -32,6 +65,9 @@ b) ¿Cuál es la probabilidad de que una pieza no sea defectuosa?
     print("Explicación: La probabilidad de que no sea defectuosa P(D') es simplemente el evento complementario de P(D).")
     p_no_d = 1 - p_d
     print(f"-> P(D') = 1 - P(D) = 1 - {p_d:.4f} = {p_no_d:.4f}")
+
+    crear_graficas(p_m1, p_m2, p_m3, p_d_m1, p_d_m2, p_d_m3, p_d)
+
 
 if __name__ == "__main__":
     main()

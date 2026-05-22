@@ -37,3 +37,29 @@ pct_en_rango <- (en_rango / n_muestras) * 100
 cat(sprintf("-> Valores muestrales que caen entre [%.2f, %.2f]: %d\n", limite_inf, limite_sup, en_rango))
 cat(sprintf("-> Porcentaje en la muestra empírica: %.2f%%\n", pct_en_rango))
 cat("-> Valor teórico según regla empírica para +/- 1 sigma: Aproximadamente 68.27%\n")
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(20)
+  cargar_ggplot()
+  df_datos <- data.frame(valor = datos)
+  curva <- data.frame(
+    x = seq(min(datos), max(datos), length.out = 200),
+    y = dnorm(seq(min(datos), max(datos), length.out = 200), mean = mu_teorica, sd = sd_teorica)
+  )
+  p1 <- ggplot(df_datos, aes(x = valor)) +
+    geom_histogram(aes(y = after_stat(density)), bins = 25, fill = "#3498db", color = "white", alpha = 0.85) +
+    geom_line(data = curva, aes(x = x, y = y), color = "#c0392b", linewidth = 1.1) +
+    geom_vline(xintercept = c(limite_inf, limite_sup), color = "#e67e22", linetype = "dashed") +
+    labs(title = "Muestra N(100, 15^2)", x = "Valor", y = "Densidad") +
+    tema_probabilidad()
+  guardar_ggplot(p1, carpeta, "histograma_normal", width = 9, height = 5)
+  df_regla <- data.frame(tipo = c("Muestra (+/-1 sigma)", "Teorico 68.27%"), pct = c(pct_en_rango, 68.27))
+  p2 <- ggplot(df_regla, aes(x = tipo, y = pct, fill = tipo)) +
+    geom_col(width = 0.55, show.legend = FALSE) +
+    scale_fill_manual(values = c("#9b59b6", "#2ecc71")) +
+    labs(title = "Regla empírica: comparación", x = NULL, y = "Porcentaje (%)") +
+    tema_probabilidad()
+  guardar_ggplot(p2, carpeta, "regla_empirica")
+}

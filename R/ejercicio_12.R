@@ -25,3 +25,17 @@ p_no_C <- p_probs[1] + p_probs[2]
 prob_ninguna_C <- dbinom(10, size=n, prob=p_no_C)
 cat(sprintf("-> Probabilidad de no elegir C por persona: %.2f\n", p_no_C))
 cat(sprintf("-> P(Las 10 personas eligen A o B) = %.4f\n", prob_ninguna_C))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(12)
+  cargar_ggplot()
+  df <- data.frame(marca = c("A", "B", "C"), prop = p_probs)
+  p <- ggplot(df, aes(x = marca, y = prop, fill = marca)) +
+    geom_col(width = 0.6, show.legend = FALSE) +
+    scale_fill_manual(values = c("#e74c3c", "#3498db", "#f1c40f")) +
+    labs(title = "Preferencias por marca", x = NULL, y = "Proporción") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "preferencias_marcas")
+}

@@ -25,3 +25,20 @@ if(porcentaje <= 5){
 } else {
   cat(sprintf("-> NO cumple la normativa, porque el porcentaje (%.2f%%) supera el límite del 5%% permitido.\n", porcentaje))
 }
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(18)
+  cargar_ggplot()
+  x <- seq(mu - 4 * sigma, mu + 4 * sigma, length.out = 300)
+  df <- data.frame(x = x, y = dnorm(x, mean = mu, sd = sigma))
+  p <- ggplot(df, aes(x = x, y = y)) +
+    geom_line(color = "#34495e", linewidth = 1.1) +
+    geom_ribbon(data = subset(df, x < limite), aes(ymin = 0, ymax = y),
+                fill = "#e74c3c", alpha = 0.35) +
+    geom_vline(xintercept = limite, color = "#c0392b", linetype = "dashed") +
+    labs(title = "Distribución del peso del paquete", x = "Peso (g)", y = "Densidad") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "normal_peso_cafe")
+}

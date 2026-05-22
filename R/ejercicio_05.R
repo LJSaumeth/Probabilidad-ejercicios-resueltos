@@ -36,3 +36,19 @@ if(abs(p_B2 - p_B2_dado_B1) < 1e-9){
 } else {
   cat("-> NO son independientes, ya que P(B2) NO es igual a P(B2 | B1). Haber sacado una bola afecta la probabilidad de la siguiente extracción.\n")
 }
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(5)
+  cargar_ggplot()
+  df <- data.frame(
+    evento = c("P(B2|N1)", "P(B1 y B2)", "P(B2)", "P(B2|B1)"),
+    valor = c(p_B2_dado_N1, p_ambas_blancas, p_B2, p_B2_dado_B1)
+  )
+  p <- ggplot(df, aes(x = evento, y = valor)) +
+    geom_col(fill = "#16a085", width = 0.6) +
+    labs(title = "Extracción sin reemplazo", x = NULL, y = "Probabilidad") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "probabilidades_urna")
+}

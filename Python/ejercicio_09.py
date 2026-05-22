@@ -1,3 +1,24 @@
+import graficas_util  # noqa: F401
+
+import matplotlib.pyplot as plt
+
+from graficas_util import carpeta_graficas, guardar_figura
+
+
+def crear_graficas(p_enfermo, p_sano, p_pos_enfermo, p_pos_sano, p_pos, p_enfermo_pos):
+    out = carpeta_graficas(9)
+    plt.bar(
+        ["P(Enf.)", "P(Sano)", "P(+|Enf.)", "P(+|Sano)", "P(+)", "P(Enf.|+)"],
+        [p_enfermo, p_sano, p_pos_enfermo, p_pos_sano, p_pos, p_enfermo_pos],
+        color=["#c0392b", "#27ae60", "#e67e22", "#f1c40f", "#8e44ad", "#2980b9"],
+    )
+    plt.ylabel("Probabilidad")
+    plt.title("Prueba diagnóstica y teorema de Bayes")
+    plt.xticks(rotation=25, ha="right")
+    plt.ylim(0, 1)
+    guardar_figura(out, "bayes_diagnostico")
+
+
 def main():
     enunciado = """
 =========================================================
@@ -33,6 +54,9 @@ Si una persona da positivo en la prueba, ¿cuál es la probabilidad de que realm
     
     print(f"-> P(Enfermo | Positivo) = P(Positivo y Enfermo) / P(Positivo) = {(p_enfermo * p_pos_enfermo):.4f} / {p_pos:.4f} = {p_enfermo_pos:.4f}")
     print(f"-> A pesar de la alta sensibilidad, hay solo un {p_enfermo_pos*100:.2f}% de probabilidad de estar enfermo si da positivo debido a que la prevalencia base (1%) es muy baja.")
+
+    crear_graficas(p_enfermo, p_sano, p_pos_enfermo, p_pos_sano, p_pos, p_enfermo_pos)
+
 
 if __name__ == "__main__":
     main()

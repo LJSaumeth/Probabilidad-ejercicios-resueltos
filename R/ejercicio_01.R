@@ -30,3 +30,18 @@ casos_favorables_c <- nrow(mayor_estricto)
 prob_c <- casos_favorables_c / resultados_totales
 cat(sprintf("-> Combinaciones con d1 > d2 > d3: %d\n", casos_favorables_c))
 cat(sprintf("-> Probabilidad = %d / %d = %.4f\n", casos_favorables_c, resultados_totales, prob_c))
+
+fa <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+if (length(fa)) {
+  source(file.path(dirname(normalizePath(sub("^--file=", "", fa[1]))), "utils_graficas.R"))
+  carpeta <- carpeta_graficas(1)
+  cargar_ggplot()
+  sumas <- espacio$d1 + espacio$d2 + espacio$d3
+  df <- as.data.frame(table(sumas))
+  names(df) <- c("suma", "freq")
+  p <- ggplot(df, aes(x = suma, y = freq)) +
+    geom_col(fill = "#5dade2", width = 0.7) +
+    labs(title = "Distribución de la suma (3 dados)", x = "Suma", y = "Frecuencia") +
+    tema_probabilidad()
+  guardar_ggplot(p, carpeta, "distribucion_suma")
+}
