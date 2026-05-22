@@ -1,22 +1,33 @@
 import math
 
 def main():
-    # Distribución Binomial Negativa
-    # Buscar el r-ésimo éxito en el k-ésimo ensayo
-    r = 5  # Número de éxitos (el quinto que compra)
+    enunciado = """
+=========================================================
+EJERCICIO 14
+La probabilidad de que un cliente compre un producto en una tienda en línea es 0.3. 
+Se observan los clientes hasta encontrar el quinto que compra.
+a) ¿Cuál es la probabilidad de que se necesiten exactamente 10 clientes?
+b) ¿Cuál es el número esperado de clientes que se deben observar?
+=========================================================
+"""
+    print(enunciado)
+
+    r = 5  # Número de éxitos objetivo (quinto que compra)
     p = 0.3  # Probabilidad de éxito (comprar)
     
-    # a) Probabilidad de que se necesiten exactamente 10 clientes (k = 10 ensayos)
-    # Fórmula: C(k-1, r-1) * p^r * (1-p)^(k-r)
+    print("--- SOLUCIÓN a) ---")
+    print("Explicación: Esta es una Distribución Binomial Negativa. Queremos saber la probabilidad de necesitar 'k' intentos totales para obtener 'r' éxitos.")
+    print("Para que el éxito número 5 ocurra exactamente en el cliente 10, debe haber exactamente 4 éxitos en los primeros 9 clientes, y que el 10mo sea un éxito obligatoriamente.")
+    print("Fórmula: C(k-1, r-1) * p^r * (1-p)^(k-r).")
     k = 10
     prob_10 = math.comb(k - 1, r - 1) * (p ** r) * ((1 - p) ** (k - r))
-    print(f"a) Probabilidad de que se necesiten exactamente 10 clientes: {prob_10:.4f}")
+    print(f"-> Combinaciones de 4 éxitos en 9 intentos (9C4): {math.comb(k - 1, r - 1)}")
+    print(f"-> Probabilidad de que se necesiten exactamente 10 clientes: {prob_10:.4f}\n")
     
-    # b) Número esperado de clientes que se deben observar
-    # Para esta parametrización de la Binomial Negativa (número total de intentos para r éxitos),
-    # la media o valor esperado es: E[X] = r / p
+    print("--- SOLUCIÓN b) ---")
+    print("Explicación: En la parametrización de número total de intentos, el valor esperado o media de la Binomial Negativa es E[X] = r / p.")
     esperado = r / p
-    print(f"b) Número esperado de clientes a observar (Media): {esperado:.4f}")
+    print(f"-> Número esperado de clientes a observar (Media): {r} / {p} = {esperado:.4f}")
 
 if __name__ == "__main__":
     main()
